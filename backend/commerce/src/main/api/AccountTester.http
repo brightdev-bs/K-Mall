@@ -1,0 +1,38 @@
+### 이메일 검증
+POST http://localhost:8080/account/email
+Content-Type: application/json
+
+{
+  "email":"brightdev.bs@gmail.com"
+}
+
+### 회원가입
+POST http://localhost:8080/account/signup
+Content-Type: application/json
+
+{
+  "email": "brightdev.bs@gmail.com",
+  "password": "password",
+  "username": "techbear"
+}
+
+### 로그인
+POST http://localhost:8080/account/login
+Content-Type: application/json
+
+{
+  "email": "brightdev.bs@gmail.com",
+  "password": "password1111"
+}
+
+### 패스워드 초기화(이메일 전송)
+GET http://localhost:8080/account/reset?email=brightdev.bs@gmail.com
+
+### 패스워드 초기화
+POST http://localhost:8080/account/reset
+Content-Type: application/json
+
+{
+  "link": "cedf5f5b-320f-4b3c-b571-44a4e3f2e8c7",
+  "password": "password1"
+}
