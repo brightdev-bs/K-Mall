@@ -1,13 +1,18 @@
 package com.example.commerce.service
 
 import com.example.commerce.entity.Customer
+import com.example.commerce.entity.EmailToken
 import com.example.commerce.global.exception.AccountException.*
 import com.example.commerce.payload.account.AccountResponse
 import com.example.commerce.payload.account.LoginForm
+import com.example.commerce.payload.account.PasswordResetForm
 import com.example.commerce.payload.account.SignupForm
 import com.example.commerce.repository.AccountRedisRepository
 import com.example.commerce.repository.AccountRepository
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.util.*
+import javax.security.auth.login.AccountNotFoundException
 
 @Service
 class AccountService(
@@ -15,6 +20,9 @@ class AccountService(
     private val accountRedisRepository: AccountRedisRepository,
     private val emailService: EmailService,
 ) {
+
+    @Value("\${host}")
+    lateinit var hostUrl: String
 
     val MAX_TRY_COUNT = 5
 
@@ -47,15 +55,33 @@ class AccountService(
         if (request.password != customer.password) {
             val loginFailCount = accountRedisRepository.setLoginFailCount(request.email)
             if (loginFailCount >= MAX_TRY_COUNT) {
-                throw InvalidFormException("5번 실패하여 계정이 잠겼습니다. 본인 인증을 해주세요.")
+                throw InvalidFormException("5번 실패하여 계정이 잠겼습니다. 비밀번호 변경을 통해 계정을 풀어주세요.")
             }
             throw InvalidFormException("5번 실패하면 계정이 잠깁니다. 틀린 횟수: ${loginFailCount}")
         }
+
+        accountRedisRepository.resetLoginCount(customer.email)
 
         return AccountResponse(
             email = customer.email,
             username = customer.username,
             point = customer.point,
         )
+    }
+
+    fun sendResetPasswordEmail(email: String) {
+        accountRepository.findByEmail(email) ?: throw AccountNotFoundException()
+        val link = UUID.randomUUID().toString()
+        emailService.save(EmailToken(email = email, link = link))
+        emailService.sendRestoreEmail(email, hostUrl + "account/" + link)
+    }
+
+    fun resetPassword(request: PasswordResetForm) {
+        val email = emailService.findByLink(request.link)
+
+        val customer = accountRepository.findByEmail(email) ?: throw AccountNotFoundException()
+        customer.resetPassword(request.password);
+
+        accountRedisRepository.resetLoginCount(email)
     }
 }

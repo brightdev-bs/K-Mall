@@ -16,4 +16,8 @@ class AccountRedisRepository(
         redisTemplate.opsForValue().set(email, failedCount, TTL)
         return failedCount
     }
+
+    fun resetLoginCount(email: String) {
+        redisTemplate.opsForValue().getAndDelete(email)
+    }
 }

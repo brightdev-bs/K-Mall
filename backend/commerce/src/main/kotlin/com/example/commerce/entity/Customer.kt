@@ -14,10 +14,14 @@ import jakarta.persistence.UniqueConstraint
 @Entity
 class Customer(
     val email: String,
-    val password: String,
+    var password: String,
     var username: String,
     var point: Int = 0,
     ) {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
+
+    fun resetPassword(newPassword: String) {
+        password = newPassword
+    }
 }
