@@ -29,6 +29,9 @@ dependencies {
     // smtp
     implementation("org.springframework.boot:spring-boot-starter-mail")
 
+    // redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
     runtimeOnly("com.h2database:h2")
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

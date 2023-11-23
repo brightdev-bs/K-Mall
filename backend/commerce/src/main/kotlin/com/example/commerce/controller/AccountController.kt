@@ -1,6 +1,7 @@
 package com.example.commerce.controller
 
 import com.example.commerce.global.response.ApiResponse
+import com.example.commerce.payload.account.LoginForm
 import com.example.commerce.payload.account.SignupForm
 import com.example.commerce.payload.email.EmailRequest
 import com.example.commerce.service.AccountService
@@ -24,6 +25,12 @@ class AccountController(private val accountService: AccountService) {
     fun signup(@RequestBody request: SignupForm): ApiResponse {
         accountService.signup(request);
         return ApiResponse.of(HttpStatus.CREATED, "회원가입이 완료되었습니다.")
+    }
+
+    @PostMapping("/login")
+    fun login(@RequestBody request: LoginForm): ApiResponse {
+        val response = accountService.login(request)
+        return ApiResponse.of(HttpStatus.OK, response)
     }
 
 }
