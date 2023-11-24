@@ -1,0 +1,313 @@
+<template>
+  <section class="container forms mt-7" ref="forms">
+    <TheLogin
+      :login-form="this.loginForm"
+      @changeForm="changeForm"
+      @update:submitLogin="submitLoginForm"
+      @loginWithSocialMedia="loginWithSocialMedia"
+    />
+
+    <!-- Signup Form -->
+    <TheSignup
+        @changeForm="changeForm"
+    />
+
+  </section>
+</template>
+<script setup>
+import TheLogin from "@/components/account/TheLogin.vue";
+import TheSignup from "@/components/account/TheSignup.vue";
+import {googleTokenLogin} from "vue3-google-login";
+import {onMounted, ref} from "vue";
+import {useAxios} from "@/composables/useAxios";
+
+const loginForm = ref({
+  email: '',
+  password: '',
+});
+
+const signupForm = ref({
+  email: '',
+  password: '',
+  password2: '',
+});
+
+const googleButtonConfig = ref({
+  width: '368px',
+});
+
+let signup = ref(false);
+const forms = ref(null);
+const pwShowHide = ref([]);
+const links = ref([]);
+
+
+onMounted(() => {
+  pwShowHide.value = forms.value.querySelectorAll(".eye-icon");
+  links.value = forms.value.querySelectorAll(".link");
+
+  pwShowHide.value.forEach(eyeIcon => {
+    eyeIcon.addEventListener("click", () => {
+      let pwFields = eyeIcon.parentElement.parentElement.querySelectorAll(".password");
+
+      pwFields.forEach(password => {
+        if (password.type === "password") {
+          password.type = "text";
+          eyeIcon.classList.replace("bx-hide", "bx-show");
+          return;
+        }
+        password.type = "password";
+        eyeIcon.classList.replace("bx-show", "bx-hide");
+      });
+    });
+  });
+
+  links.value.forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      forms.value.classList.toggle("show-signup");
+    });
+  });
+});
+
+const submitLoginForm = async (body) => {
+  console.log(body)
+  const { submitExecute } = useAxios(
+    '/account/login',
+    {
+      method: 'post',
+    },
+    {
+      immediate: false,
+      onSuccess: res => {
+        console.log("로그인 성공")
+        // saveUserInfo(res);
+      },
+    },
+  );
+
+  submitExecute(body);
+};
+
+const changeForm = (isSignup) => {
+  signup.value = isSignup;
+};
+
+const loginWithSocialMedia = async (platform) => {
+  if (platform === 'google') {
+    try {
+      const response = await googleTokenLogin();
+      const token = response.access_token;
+
+      const params = {
+        'token': token
+      };
+
+      // ajax call to backend
+      const { submitExecute } = useAxios(
+        'v1/login/google',
+        {
+          method: 'get',
+          params,
+        },
+        {
+          immediate: false,
+          onSuccess: res => {
+            saveUserInfo(res);
+          },
+        },
+      );
+
+      submitExecute(token);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+};
+
+const saveUserInfo = (res) => {
+  localStorage.setItem('token', res.data.data.token);
+  localStorage.setItem('name', res.data.data.username);
+  localStorage.setItem('id', res.data.data.id);
+  location.href = process.env.VUE_APP_ADDRESS;
+};
+
+
+</script>
+<style>
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+.container{
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: white;
+  column-gap: 30px;
+}
+.form{
+  position: absolute;
+  max-width: 430px;
+  width: 100%;
+  padding: 30px;
+  border-radius: 6px;
+  background: #FFF;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+.form.signup{
+  opacity: 0;
+  pointer-events: none;
+}
+.forms.show-signup .form.signup{
+  opacity: 1;
+  pointer-events: auto;
+}
+.forms.show-signup .form.login{
+  opacity: 0;
+  pointer-events: none;
+}
+header{
+  font-size: 28px;
+  font-weight: 600;
+  color: #232836;
+  text-align: center;
+}
+form{
+  margin-top: 30px;
+}
+.form .field{
+  position: relative;
+  height: 50px;
+  width: 100%;
+  margin-top: 20px;
+  border-radius: 6px;
+}
+.field input,
+.field button{
+  height: 100%;
+  width: 100%;
+  border: none;
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 6px;
+}
+.field input{
+  outline: none;
+  padding: 0 15px;
+  border: 1px solid#CACACA;
+}
+.field input:focus{
+  border-bottom-width: 2px;
+}
+.eye-icon{
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #8b8b8b;
+  cursor: pointer;
+  padding: 5px;
+}
+.field button{
+  color: #fff;
+  background-color: #0171d3;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.field button:hover{
+  background-color: #016dcb;
+}
+.form-link{
+  text-align: center;
+  margin-top: 10px;
+}
+.form-link span,
+.form-link a{
+  font-size: 14px;
+  font-weight: 400;
+  color: #232836;
+}
+.form a{
+  color: #0171d3;
+  text-decoration: none;
+}
+.form-content a:hover{
+  text-decoration: underline;
+}
+.line{
+  position: relative;
+  height: 1px;
+  width: 100%;
+  margin: 36px 0;
+  background-color: #d4d4d4;
+}
+.line::before{
+  content: 'Or';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #FFF;
+  color: #8b8b8b;
+  padding: 0 15px;
+}
+.media-options a{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+a.facebook{
+  color: #fff;
+  background-color: #4267b2;
+}
+a.facebook .facebook-icon{
+  height: 28px;
+  width: 28px;
+  color: #0171d3;
+  font-size: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+}
+.facebook-icon,
+img.google-img{
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+}
+img.google-img{
+  height: 20px;
+  width: 20px;
+  object-fit: cover;
+}
+a.google{
+  border: 1px solid #CACACA;
+}
+a.google span{
+  font-weight: 500;
+  opacity: 0.6;
+  color: #232836;
+}
+
+.error-message {
+  color: darkred;
+  margin-left: 15px;
+}
+
+@media screen and (max-width: 400px) {
+  .form{
+    padding: 20px 10px;
+  }
+
+}
+
+</style>
