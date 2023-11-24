@@ -3,7 +3,7 @@ package com.example.commerce.global.response
 import org.springframework.http.HttpStatus
 import org.springframework.validation.BindingResult
 
-class ApiResponse private constructor(val statusCode: HttpStatus, val response: Any?) {
+class ApiResponse private constructor(val statusCode: HttpStatus, val message: Any?) {
 
     companion object {
 
