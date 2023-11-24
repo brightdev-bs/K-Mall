@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar :elevation="10">
+  <v-app-bar :elevation="10" >
     <v-btn href="/">K-MALL</v-btn>
     <template v-slot:append>
       <v-btn-group v-if="isActive()">
