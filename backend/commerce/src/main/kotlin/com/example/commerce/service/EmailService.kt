@@ -6,9 +6,7 @@ import com.example.commerce.global.exception.EmailException.*
 import com.example.commerce.repository.EmailTokenRepository
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class EmailService(
@@ -16,7 +14,6 @@ class EmailService(
     private val emailTokenRepository: EmailTokenRepository,
 ) {
 
-    @Async
     fun sendEmail(email: String) {
         val mail = SimpleMailMessage()
         mail.setTo(email)
@@ -25,7 +22,7 @@ class EmailService(
         try {
             mailSender.send(mail)
         } catch (e: Exception) {
-            e.printStackTrace()
+            throw EmailException(e.message!!)
         }
     }
 

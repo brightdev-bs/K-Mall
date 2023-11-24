@@ -27,7 +27,8 @@ class AccountService(
     val MAX_TRY_COUNT = 5
 
     fun sendEmail(email: String) {
-        if(isDuplicated(email)) throw DuplicatedEmailException()
+        if(isDuplicated(email))
+            throw DuplicatedEmailException()
         emailService.sendEmail(email)
     }
 
@@ -60,13 +61,18 @@ class AccountService(
             throw InvalidFormException("5번 실패하면 계정이 잠깁니다. 틀린 횟수: ${loginFailCount}")
         }
 
-        accountRedisRepository.resetLoginCount(customer.email)
+        updateSession(customer.email)
 
         return AccountResponse(
             email = customer.email,
             username = customer.username,
             point = customer.point,
         )
+    }
+
+    private fun updateSession(email: String) {
+        accountRedisRepository.resetLoginCount(email)
+
     }
 
     fun sendResetPasswordEmail(email: String) {
