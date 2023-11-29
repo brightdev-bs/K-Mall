@@ -6,12 +6,19 @@ import jakarta.persistence.*
 class Product(
     @ManyToOne
     @JoinColumn
-    private var category: ProductCategory,
+    var category: ProductCategory,
+
     @Column(nullable = false)
     var productName: String,
 
-    @Column(columnDefinition = "TEXT")
+    @Column(nullable = false)
     var description: String,
+
+    @Column(nullable = false)
+    val thumbnailUrl: String,
+
+    @Column(columnDefinition = "TEXT")
+    var body: String,
     @Column(nullable = false)
     var price: Int,
 
