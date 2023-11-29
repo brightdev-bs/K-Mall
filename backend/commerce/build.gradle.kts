@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.8.22"
     kotlin("plugin.spring") version "1.8.22"
     kotlin("plugin.jpa") version "1.8.22"
+    kotlin("kapt") version "1.8.22"
 }
 
 group = "com.example"
@@ -32,10 +33,23 @@ dependencies {
     // redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
+    // querydsl
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+
     runtimeOnly("com.h2database:h2")
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+}
+
+kapt {
+    javacOptions {
+        option("querydsl.entityAccessors", true)
+    }
+    arguments {
+        arg("plugin", "com.querydsl.apt.jpa.JPAAnnotationProcessor")
+    }
 }
 
 tasks.withType<KotlinCompile> {
