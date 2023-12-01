@@ -13,6 +13,7 @@ class ProductQueryRepository(
         return queryFactory
             .selectFrom(product)
             .where(product.productName.contains(searchWord))
+            .limit(10)
             .fetch()
     }
 }

@@ -13,6 +13,7 @@ class ProductService(
     private val productCategoryRepository: ProductCategoryRepository
 ) {
 
+
     fun findProductsBySearch(keyword: String): List<ProductSearchResult> {
         val results = productQueryRepository.findBySearchWord(keyword)
         return results

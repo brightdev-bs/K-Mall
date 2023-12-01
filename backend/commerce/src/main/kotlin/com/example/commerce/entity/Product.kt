@@ -1,7 +1,9 @@
 package com.example.commerce.entity
 
+import com.example.commerce.global.annotations.AllOpen
 import jakarta.persistence.*
 
+@AllOpen
 @Entity
 class Product(
     @ManyToOne
@@ -22,7 +24,7 @@ class Product(
     @Column(nullable = false)
     var price: Int,
 
-) {
+    ) {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
