@@ -9,6 +9,7 @@
         <v-spacer/>
         <v-tab @click="$emit('moveToCategory', category)" v-for="category in categories">{{ category }}</v-tab>
         <v-spacer/>
+        <v-btn class="fill-height" variant="text" @click="login">login</v-btn>
       </v-tabs>
     </v-col>
   </v-row>
@@ -17,6 +18,7 @@
 
 import {useRoute} from "vue-router";
 import {onMounted, ref} from "vue";
+import router from "@/router";
 
 const route = useRoute();
 
@@ -29,6 +31,10 @@ onMounted(() => {
     activeCategory.value = categoryFromRoute;
   }
 });
+
+const login = () => {
+  router.push("/login")
+}
 </script>
 <style scoped>
 

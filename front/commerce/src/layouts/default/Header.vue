@@ -1,11 +1,17 @@
 <template>
-  <div class="ml-3 mr-3">
+  <div
+    v-if="!$route.path.includes('/login')"
+    class="ml-3 mr-3"
+  >
     <SearchBar
       @submit="searchProduct"
     />
     <HorizontalCategory
       @move-to-category="moveToCategory"
+      @login="moveToLogin"
     />
+
+
   </div>
 </template>
 <script>
@@ -22,12 +28,15 @@ export default {
       console.log(category)
       category = category.toLowerCase();
       if (category === 'home') {
-        this.$emit('updateData', true);
+        this.$emit('updateData', "/");
       } else {
-        this.$emit('updateData', true);
+        this.$emit('updateData', category);
         // Todo: 데이터 업데이트
       }
     },
+    moveToLogin() {
+      this.$emit()
+    }
   }
 
 }
