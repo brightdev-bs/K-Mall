@@ -27,6 +27,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
+    implementation("org.hibernate.orm:hibernate-jcache:6.4.0.Final")
+    implementation("org.ehcache:ehcache:3.10.0:jakarta")
+
     // smtp
     implementation("org.springframework.boot:spring-boot-starter-mail")
 
@@ -65,4 +68,8 @@ tasks.withType<Test> {
 
 tasks.bootBuildImage {
     builder.set("paketobuildpacks/builder-jammy-base:latest")
+}
+
+allOpen {
+    annotation("javax.persistence.Entity")
 }
