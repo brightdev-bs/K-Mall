@@ -15,7 +15,8 @@ export default {
   components: {DefaultHeader},
   methods: {
     updateData(category) {
-      this.$router.go(category);
+      console.log("updateData = ", category);
+      this.$router.push(category);
     }
   }
 }

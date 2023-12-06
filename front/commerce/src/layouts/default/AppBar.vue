@@ -1,35 +1,29 @@
 <template>
-  <v-app-bar :elevation="10" >
-    <v-btn href="/">K-MALL</v-btn>
-    <template v-slot:append>
-      <v-btn-group v-if="isActive()">
-        <v-btn href="/login">LOGIN</v-btn>
-      </v-btn-group>
-      <v-btn-group v-else>
-        <v-btn href="/my-page">{{ username }}</v-btn>
-        <v-btn @click="logout">logout</v-btn>
-      </v-btn-group>
-    </template>
-  </v-app-bar>
+    <v-app-bar>
+      <v-container>
+        <v-btn href="/" class="float-left">K-MALL</v-btn>
+        <v-btn class="float-right" >
+          <v-badge :content="this.basketNumber">
+            <v-icon size="x-large" icon="mdi-cart-outline"></v-icon>
+          </v-badge>
+        </v-btn>
+      </v-container>
+    </v-app-bar>
 </template>
 
-<script setup>
+<script>
 
-import router from "@/router";
+import {useStore} from "vuex";
+import {computed} from "vue";
 
-let username = '';
+export default {
+  setup() {
+    const store = useStore();
+    const basketNumber = computed(() => store.state.basketNumber);
+    const increase = () => store.commit("setCounter", basketNumber.value++);
 
-function isActive() {
-  username = localStorage.getItem("name");
-  const token = localStorage.getItem("token");
-  return !username;
-}
-
-function logout() {
-  localStorage.removeItem('id');
-  localStorage.removeItem('name');
-  localStorage.removeItem('token');
-  router.go();
+    return { basketNumber, increase }
+  }
 }
 
 </script>
