@@ -5,6 +5,10 @@ spring:
     password: localpassword
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  session:
+    store-type: redis
+    redis:
+      namespace: kmall
   data:
     redis:
       host: localhost
@@ -36,7 +40,7 @@ spring:
         default_batch_fetch_size:  100
         highlight_sql: true
         format_sql: true
-        generate_statistics: true
+#        generate_statistics: true
         javax.cache:
           provider: org.ehcache.jsr107.EhcacheCachingProvider
           uri: ehcache.xml
@@ -46,12 +50,11 @@ spring:
 
 
 
-
-
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql: trace
+#    org.hibernate.SQL: debug
+#    org.hibernate.type.descriptor.sql: trace
 
 host: localhost:8080/
 front-server: http://localhost:3000
+logging:
+  level:
+    root: info
