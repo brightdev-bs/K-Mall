@@ -10,12 +10,12 @@ fun getSessionFromCookie(request: HttpServletRequest): String? {
     if (cookies != null) {
         for (cookie in cookies) {
             if (cookie.name.equals("SESSION")) {
-                log.debug("session 찾음")
+                log.debug("Cookie founded")
                 return cookie.value;
             }
         }
     } else {
-        log.info("No cookies")
+        log.debug("No cookies")
         return null
     }
     return null

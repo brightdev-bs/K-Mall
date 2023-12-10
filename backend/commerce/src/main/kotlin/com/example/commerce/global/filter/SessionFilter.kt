@@ -30,6 +30,11 @@ class SessionFilter(
             val session = getSessionFromCookie(request)
             if (session == null) {
                 val sessionId = request.getSession(true).id
+            } else {
+                val exists = redisSessionRepository.isExistedSession(session.toString())
+                log.info(exists)
+
+                if (!exists) request.getSession(true)
             }
         }
 
