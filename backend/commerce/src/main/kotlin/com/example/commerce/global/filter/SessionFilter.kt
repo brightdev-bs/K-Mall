@@ -5,6 +5,7 @@ import com.example.commerce.repository.RedisSessionRepository
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -23,10 +24,15 @@ class SessionFilter(
         filterChain: FilterChain
     ) {
 
-        val session = getSessionFromCookie(request)
-        if (session == null) {
-            val sessionId = request.getSession(true).id
+        if (request.method == HttpMethod.OPTIONS.toString()) {
+            log.debug("This is preflight")
+        } else {
+            val session = getSessionFromCookie(request)
+            if (session == null) {
+                val sessionId = request.getSession(true).id
+            }
         }
+
 
         filterChain.doFilter(request, response)
     }
