@@ -1,0 +1,7 @@
+POST http://localhost:8080/basket-items
+Content-Type: application/json
+Cookie: SESSION=NWQ5ZWMxMmUtM2FkNC00YmNkLWJmYTktYjBlODM0OWYxZDcy
+
+{
+  "productId": 1
+}

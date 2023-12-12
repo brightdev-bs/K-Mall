@@ -7,7 +7,9 @@ import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
+import org.springframework.data.redis.serializer.RedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
+
 
 @Configuration
 class RedisConfig(
@@ -21,6 +23,11 @@ class RedisConfig(
     @Bean
     fun redisConnectionFactory(): RedisConnectionFactory {
         return LettuceConnectionFactory(host, port)
+    }
+
+    @Bean
+    fun springSessionDefaultRedisSerializer(): RedisSerializer<Any> {
+        return GenericJackson2JsonRedisSerializer()
     }
 
     @Bean

@@ -1,6 +1,8 @@
 package com.example.commerce.global.exception
 
+import com.example.commerce.global.logger.logger
 import com.example.commerce.global.response.ApiResponse
+import org.springframework.data.redis.RedisSystemException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindException
@@ -47,6 +49,23 @@ class ExceptionHandler {
         val errorResponse = ApiResponse.of(HttpStatus.BAD_REQUEST, e.message)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body<ApiResponse>(errorResponse)
     }
+
+    /**
+     * Product 관련 예외
+     */
+    @ExceptionHandler(ProductException::class)
+    protected fun handleProductException(e: ProductException): ResponseEntity<ApiResponse> {
+        val errorResponse = ApiResponse.of(HttpStatus.BAD_REQUEST, e.message)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body<ApiResponse>(errorResponse)
+    }
+
+    @ExceptionHandler(RedisSystemException::class)
+    protected fun handleRedisSystemException(e: RedisSystemException): ResponseEntity<ApiResponse> {
+        logger().info("e = ${e}, ${e.printStackTrace()}")
+        val errorResponse = ApiResponse.of(HttpStatus.BAD_REQUEST, e.message)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body<ApiResponse>(errorResponse)
+    }
+
 
     /**
      * 나머지 예외
