@@ -27,12 +27,14 @@ class SessionFilter(
         if (request.method == HttpMethod.OPTIONS.toString()) {
             log.debug("This is preflight")
         } else {
+            log.debug("session Filter 시작")
             val session = getSessionFromCookie(request)
             if (session == null) {
                 val sessionId = request.getSession(true).id
+                log.debug("created sessionId = ${sessionId}")
             } else {
                 val exists = redisSessionRepository.isExistedSession(session.toString())
-                log.info(exists)
+                log.debug("redis에 session 없음 ${exists}")
 
                 if (!exists) request.getSession(true)
             }

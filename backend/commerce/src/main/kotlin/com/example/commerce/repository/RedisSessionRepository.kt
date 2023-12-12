@@ -24,7 +24,6 @@ class RedisSessionRepository(
     fun isExistedSession(sessionId: String): Boolean {
         val decode = String(Base64.getDecoder().decode(sessionId))
         val hasKey = redisTemplate.opsForHash<String, String>().hasKey(SESSION_PREFIX + decode, "creationTime")
-        log.info("hasKey = ${hasKey}")
         return hasKey
     }
 
@@ -40,5 +39,13 @@ class RedisSessionRepository(
         } else {
             redisTemplate.opsForHash<String, Any>().put(key, productId, 0)
         }
+    }
+
+    fun deleteSession(sessionId: String) {
+
+        val key = BASKET_PREFIX + sessionId
+        // redis hash key 삭제
+        redisTemplate.delete(key)
+
     }
 }

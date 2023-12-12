@@ -7,7 +7,6 @@ import com.example.commerce.payload.basket.BasketItemRequest
 import com.example.commerce.repository.RedisSessionRepository
 import com.example.commerce.repository.product.ProductRepository
 import jakarta.servlet.http.HttpServletRequest
-import org.hibernate.SessionException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,8 +27,6 @@ class BasketItemService(
         val sessionId = String(Base64.getEncoder().encode(session.id.toByteArray()))
 
         log.debug("sessionId = ${sessionId}")
-
-        if (!redisSessionRepository.isExistedSession(sessionId)) throw SessionException("존재하지 않는 세션입니다.")
 
         val product = productRepository.findByIdOrNull(basketItemRequest.productId)
             ?: throw ProductException.NotFoundProductException()
